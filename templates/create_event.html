@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>::Event Info::</title>
+
+    <form method="post">
+        {% csrf_token %}
+        <h3>Please enter Your event information:</h3>
+        {{ form.as_p }}
+
+        <div class="round">
+
+        <input type="submit" value="Submit" />
+        </div>
+    </form>
+</head>
+<body>
+
+</body>
+</html>

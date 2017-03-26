@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <form method="POST">
+        {% csrf_token %}
+        <h3>Please update Your Event information:</h3>
+        {{form1.as_p}}
+        <h3> Owner:</h3>
+        {{form2.as_p}}
+        <h3> Location:</h3>
+        {{form3.as_p}}
+        <div class="round">
+
+        <input type="submit" value="Submit" />
+        </div>
+    </form>
+</head>
+<body>
+
+</body>
+</html>

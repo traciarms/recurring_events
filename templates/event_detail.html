@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Detail</title>
+    <ul>
+     <li>Name: {{ event.name }}
+     <li>Start Date: {{ event.start_date }}
+     <li>{% for del in deliveries %}
+            Delivery{{ del.num }}: {{ del.date }}
+         {% endfor %}
+    </ul>
+</head>
+<body>
+
+</body>
+</html>
