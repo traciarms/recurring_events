@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Events</title>
+    {% for event in object_list %}
+        <li>Event Name:<a href="{% url 'detail' event.id %}">
+              {{ event.name }} </a></li>
+        <li>Delivery Date:  {{ event.delivery_date }} </li>
+        <a href="{% url 'delete' event.id %}">
+              Delete this event? </a>
+        <hr>
+    {% empty %}
+        <li>No events yet.</li>
+    {% endfor %}
+</head>
+<body>
+
+</body>
+</html>

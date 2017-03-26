@@ -34,9 +34,22 @@ class Event(models.Model):
                                              year=year,
                                              month=month)
         while self.calculated_date < self.start_date:
-            self.calculated_date = datetime.date(day=self.day_of_month_of_occ,
-                                                 year=year,
-                                                 month=self.calculated_date.month + 1)
+            next_day = self.day_of_month_of_occ
+            next_year = year
+            next_month = (self.calculated_date.month + 1) % 12
+            if (self.calculated_date.month + 1) > 12:
+                next_year += 1
+
+            created = False
+            while not created:
+                # handle days that don't exist in the month
+                try:
+                    self.calculated_date = datetime.date(day=next_day,
+                                                         year=next_year,
+                                                         month=next_month if next_month > 0 else 12)
+                    created = True
+                except ValueError:
+                    next_day -= 1
 
         self.delivery_date = self.calculated_date
 
@@ -48,10 +61,21 @@ class Event(models.Model):
             # make sure we have not gone back past the start date - if so
             # go forward to the next month
             if self.delivery_date < self.start_date:
-                self.day_of_month_of_occ = \
-                    datetime.date(day=self.day_of_month_of_occ,
-                                  year=self.delivery_date.year,
-                                  month=self.delivery_date.month + 1)
+                next_day = self.day_of_month_of_occ
+                next_year = self.delivery_date.year
+                next_month = (self.delivery_date.month + 1) % 12
+                if (self.delivery_date.month + 1) > 12:
+                    next_year += 1
+
+                created = False
+                while not created:
+                    try:
+                        self.day_of_month_of_occ = \
+                            datetime.date(day=next_day,
+                                          year=next_year,
+                                          month=next_month)
+                    except ValueError:
+                        next_day -= 1
 
         super(Event, self).save(*args, **kwargs)
 

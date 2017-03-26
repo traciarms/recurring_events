@@ -6,9 +6,13 @@
     <ul>
      <li>Name: {{ event.name }}
      <li>Start Date: {{ event.start_date }}
-     <li>{% for del in deliveries %}
-            Delivery date: {{ del }}
-         {% endfor %}
+     <li>Number of months between deliveries: {{ event.num_months_between_occ }}</li>
+     <li>Preferred Day of Month for delivery: {{ event.day_of_month_of_occ }}</li>
+        <ul>{% for del in deliveries %}
+            <li> Delivery date: {{ del }}</li>
+            {% endfor %}
+        </ul>
+    <a href="{% url 'update' event.id %}">Update this event</a>
     </ul>
 </head>
 <body>
