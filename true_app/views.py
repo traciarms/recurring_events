@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.urls import reverse_lazy
+import datetime
 
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, DeleteView
 
 from true_app.forms import CreateEventForm
@@ -20,9 +20,19 @@ class EventDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(EventDetail, self).get_context_data(**kwargs)
+        """ add next four deliveries to the detail page """
+        event = Event.objects.get(pk=self.kwargs.get('event_id', None))
         deliveries = []
-
+        for i in range(4):
+            print(event.delivery_date)
+            print(event.delivery_date.month + i)
+            next_date = datetime.date(day=event.delivery_date.day,
+                                      year=event.delivery_date.year,
+                                      month=event.delivery_date.month + i)
+            deliveries.append(next_date)
+        context['deliveries'] = deliveries
         return context
+
 
 class DeleteEvent(DeleteView):
     model = Event

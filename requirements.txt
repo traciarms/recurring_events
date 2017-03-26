@@ -1,0 +1,4 @@
+Django==1.10.6
+holidays==0.8.1
+python-dateutil==2.6.0
+six==1.10.0

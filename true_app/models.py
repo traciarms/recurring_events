@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from datetime import datetime, date
-
+import datetime
+import holidays
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -29,23 +29,30 @@ class Event(models.Model):
         month = today.month
         year = today.year
 
-        start_date = self.start_date
-        self.calculated_date = \
-            date(day=self.day_of_month_of_occ, year=year, month=month)
-        if self.calculated_date < start_date:
-            self.calculated_date = \
-                date(day=self.day_of_month_of_occ, year=year, month=month+1)
+        # first calculate the calculated date from the day of month given
+        self.calculated_date = datetime.date(day=self.day_of_month_of_occ,
+                                             year=year,
+                                             month=month)
+        while self.calculated_date < self.start_date:
+            self.calculated_date = datetime.date(day=self.day_of_month_of_occ,
+                                                 year=year,
+                                                 month=self.calculated_date.month + 1)
 
+        self.delivery_date = self.calculated_date
 
-        # if self.day_of_month_of_occ
-        # self.calculated_date =
-        #
-        # to_date = from_date
-        # while number_of_days:
-        #     to_date += timedelta(1)
-        #     if to_date.weekday() < 5:  # i.e. is not saturday or sunday
-        #         number_of_days -= 1
-        # return to_date
+        us_holidays = holidays.UnitedStates()
+        while self.delivery_date.weekday() > 4 or \
+                self.delivery_date in us_holidays:
+            self.delivery_date = self.delivery_date - datetime.timedelta(days=1)
+
+            # make sure we have not gone back past the start date - if so
+            # go forward to the next month
+            if self.delivery_date < self.start_date:
+                self.day_of_month_of_occ = \
+                    datetime.date(day=self.day_of_month_of_occ,
+                                  year=self.delivery_date.year,
+                                  month=self.delivery_date.month + 1)
+
         super(Event, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
